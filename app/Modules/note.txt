@@ -1,0 +1,48 @@
+composer require caffeinated/modules
+
+config/app.php file:
+Service Provider
+
+Caffeinated\Modules\ModulesServiceProvider::class,
+Facade
+
+'Module' => Caffeinated\Modules\Facades\Module::class,
+
+when change other :
+php artisan module:optimize
+
+You will need to delete storage/app/modules.json and run
+php artisan module:optimize
+to regenerate the modules.json file with new values.
+=====================================================
+
+php artisan make:module blog
+
+php artisan make:module:controller blog PostController
+
+php artisan make:module:model blog Post
+php artisan make:module:model blog Post --migration
+
+php artisan make:module:migration blog create_posts_table
+
+php artisan make:module:request blog CreatePostRequest
+
+php artisan module:migrate
+php artisan module:migrate blog --pretend
+
+====================================================
+php artisan make:module:middleware blog Xxx
+
+Simply register as a route middleware with a short-hand key in your app/Http/Kernel.php file.
+protected $routeMiddleware = [
+    ...
+    'module' => \Caffeinated\Modules\Middleware\IdentifyModule::class,
+];
+
+use :
+Route::group(['prefix' => 'blog', 'middleware' => ['module:blog']], function() {
+
+});
+
+=================================================
+return view('blog::admin');
