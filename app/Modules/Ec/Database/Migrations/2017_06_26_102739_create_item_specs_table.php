@@ -15,6 +15,11 @@ class CreateItemSpecsTable extends Migration
     {
         Schema::create('item_specs', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('key')->index()->nullable();
+            $table->string('title')->nullable();
+            $table->integer('category_id')->index()->nullable()->default(0);
+            $table->integer('status')->index()->default(0)->nullable();
+            $table->integer('user_id')->index()->default(0)->nullable();
             $table->timestamps();
         });
     }

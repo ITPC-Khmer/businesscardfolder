@@ -45,5 +45,47 @@ class ItemCategory extends Model
 
     }
 
+    public static function saveData($request)
+    {
+        $id = $request->id;
+        if($id>0)
+        {
+            $m = self::find($id);
+        }else{
+            $m = new ItemCategory();
+        }
+
+        // save file
+        $image = '#';
+        if($request->hasFile('image')) {
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $filename = rand(11111, 99999) . '_' . time() .rand(1000, 5000). '.' . $extension;
+            $file->move(public_path('upload'), $filename);
+            $image = $filename;
+            $m->image = $image;
+        }
+
+        $m->parent = $request->parent;
+        $m->title = $request->title;
+        $m->description = $request->description;
+
+        $m->status = $request->status;
+        $m->user_id = getUserID();
+
+        if($m->save())
+        {
+            return $m;
+        }else{
+            return null;
+        }
+
+    }
+
+    public static function getPaginate($request)
+    {
+        $m = self::orderBy('id','desc')->paginate(12);
+        return $m;
+    }
 
 }

@@ -57,11 +57,12 @@ class ItemBrand extends Model
             $filename = rand(11111, 99999) . '_' . time() .rand(1000, 5000). '.' . $extension;
             $file->move(public_path('upload'), $filename);
             $image = $filename;
+            $m->logo = $image;
         }
 
         // assign model
         $m->brand_name = $request->brand_name;
-        $m->logo = $image;
+
         $m->status = $request->status;
         $m->user_id = getUserID();
 

@@ -15,6 +15,9 @@ class CreateItemSpecDetailsTable extends Migration
     {
         Schema::create('item_spec_details', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('item_id')->index()->nullable()->default(0);
+            $table->integer('spec_id')->index()->nullable()->default(0);
+            $table->string('spec_value')->index()->nullable();
             $table->timestamps();
         });
     }
