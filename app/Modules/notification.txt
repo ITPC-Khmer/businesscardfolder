@@ -1,3 +1,28 @@
 php artisan notifications:table
 
 php artisan make:notification PostNotification
+
+=====================================================
+Route::get('/n',function (){
+    $m = \App\User::get();
+    \Illuminate\Support\Facades\Notification::send($m,new \App\Notifications\PostNotification());
+});
+
+=====================================================
+
+public function via($notifiable)
+{
+    return ['database'];
+}
+
+
+public function toDatabase()
+{
+    return [
+        'id' => 1,
+        'title' => 'test',
+        'data' => '2017-06-30',
+    ];
+}
+
+=====================================================
