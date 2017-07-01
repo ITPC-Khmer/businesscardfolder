@@ -52,9 +52,9 @@ class PostController extends Controller
             'description' => 'required'
         ]);
 
-        if(Post::saveData($request)!=null)
+        if(Post::saveData($request) !=null)
         {
-            redirect('blog/admin/post');
+            return redirect('blog/admin/post');
         }else{
             return redirect()->back()->withErrors([_t('Save error')]);
         }

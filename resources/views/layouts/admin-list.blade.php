@@ -115,12 +115,11 @@
                                     tr += '<td></td>';
                                 }else if( (typeof  item[c]) == 'string' || (typeof  item[c]) == 'number') {
                                     tr += '<td>' + item[c] + '</td>';
-                                }else if((typeof  item[c]) == 'object') {
-
+                                }else {
 
                                     $.each(item[c],function (i,images) {
-                                        if(images.image && images.image != '') {
-                                            tr += '<td width="50"><img src="{{ url('/imagecache/50x50') }}/' + images.image + '" height="50"></td>';
+                                        if(images && images != '') {
+                                            tr += '<td width="50"><img src="{{ url('/imagecache/50x50') }}/' + images + '" height="50"></td>';
 
                                             return false;
                                         }

@@ -22,8 +22,8 @@ $meta_description = isset($row->meta_description)?$row->meta_description:'';
     <link href="{{ $base_url }}assets/cropit.css" rel="stylesheet" type="text/css" />
     <style>
         .cropit-preview {
-            width: 100px;
-            height: 100px;
+            width: 500px;
+            height: 250px;
         }
     </style>
 @endsection
@@ -82,27 +82,16 @@ $meta_description = isset($row->meta_description)?$row->meta_description:'';
                                     <input name="meta_description" id="meta_description" value="{{ $meta_description }}" type="text" class="form-control need-clear">
                                 </div>
                             </div>
-                            @if(count($image)>0 && $id > 0)
-                            <div class="form-group cropit-add-img" data-index="0">
-                                <label for="meta_description" class="col-md-3 control-label">{{ _t('Image') }}</label>
-                                <div class="col-md-9">
-                                    <div class="image-data2-remove-hidden"></div>
-                                    @foreach($image as $img)
-
-                                        <div style="position:relative;width: 100px;float: left;margin: 5px;">
-                                            <img src = "{{ url("photo/custom/{$img}?size=100x100") }}" style="min-width:100px;max-width:100px;">
-                                            <div style="position:absolute;width:100px;top:0;left:0;text-align: right;">
-                                                <a data-img="{{ $img }}" href="#" class="btn btn-xs red image-data2-remove"><i class="fa fa-remove"></i></a>
-                                            </div>
-                                            <input type="hidden" name="image_data2[]" value="{{ $img }}" class="image_data2" />
-                                        </div>
-
-                                    @endforeach
-                                </div>
-                            </div>
-                            @endif
 
                             <div class="form-group cropit-add-img" data-index="0">
+                                {{ Form::hidden('image[0][imgW]',null,['class'=>'imgW need-clear']) }}
+                                {{ Form::hidden('image[0][imgH]',null,['class'=>'imgH need-clear']) }}
+
+                                {{ Form::hidden('image[0][imgY1]',null,['class'=>'imgY1 need-clear']) }}
+                                {{ Form::hidden('image[0][imgX1]',null,['class'=>'imgX1 need-clear']) }}
+
+                                {{ Form::hidden('image[0][cropW]',null,['class'=>'cropW need-clear']) }}
+                                {{ Form::hidden('image[0][cropH]',null,['class'=>'cropH need-clear']) }}
 
                                 <label for="meta_description" class="col-md-3 control-label">{{ _t('Image') }}</label>
                                 <div class="col-md-9">
@@ -116,7 +105,7 @@ $meta_description = isset($row->meta_description)?$row->meta_description:'';
                                                 <span class="input-group-addon btn default btn-file">
                                                      <span class="fileinput-new"> Select file </span>
                                                      <span class="fileinput-exists"> Change </span>
-                                                     <input type="file" class="cropit-image-input need-clear file-use">
+                                                     <input type="file" name="r_image[0]" class="cropit-image-input need-clear file-use">
                                                 </span>
                                                 <a href="javascript:;" class="input-group-addon btn red fileinput-exists remove-photo"> {{ _t('Remove') }} </a>
                                                 <a href="javascript:;" class="input-group-addon btn blue fileinput-exists add-photo"> {{ _t('Add') }} </a>
@@ -128,7 +117,7 @@ $meta_description = isset($row->meta_description)?$row->meta_description:'';
                                             Resize image
                                         </div>
                                         <input type="range" class="cropit-image-zoom-input">
-                                        <input type="hidden" name="image_data[]" class="hidden-image-data need-clear image_data" />
+                                        <input type="hidden" name="image-data" class="hidden-image-data need-clear" />
                                     </div>
                                 </div>
                             </div>
@@ -180,9 +169,7 @@ $meta_description = isset($row->meta_description)?$row->meta_description:'';
             $('[name=category_id]').select2();
 
             c_img[i_img] = $('.image-editor');
-            c_img[i_img].cropit({
-                exportZoom:4
-            });
+            c_img[i_img].cropit();
 
             $('body').delegate('.remove-photo','click',function () {
                 if($('.remove-photo').length > 1){
@@ -197,10 +184,7 @@ $meta_description = isset($row->meta_description)?$row->meta_description:'';
                 new_img.html(imgx);
                 $('.cropit-add-img:last').after(new_img);
                 c_img[i_img] = $('.cropit-add-img:last').find('.image-editor');
-
-                c_img[i_img].cropit({
-                    exportZoom:4
-                });
+                c_img[i_img].cropit();
 
                 $(this).hide();
             });
@@ -217,10 +201,24 @@ $meta_description = isset($row->meta_description)?$row->meta_description:'';
                     if(c_img[c_index]) {
                         $editor = c_img[c_index];
 
-                        var img_export = $editor.cropit('export');
+//                        ['imageState', 'imageSrc', 'offset', 'previewSize', 'imageSize', 'zoom', 'initialZoom', 'exportZoom', 'minZoom', 'maxZoom']
 
-                        d.find('.image_data').val(img_export);
 
+                        //var imgSrc = $editor.cropit('imageSrc');
+                        var offset = $editor.cropit('offset');
+                        d.find('.imgX1').val(offset.x);
+                        d.find('.imgY1').val(offset.y);
+
+                        var zoom = $editor.cropit('zoom');
+                        var imageSize = $editor.cropit('imageSize');
+                        d.find('.imgW').val(imageSize.width*zoom);
+                        d.find('.imgH').val(imageSize.height*zoom);
+
+                        var previewSize = $editor.cropit('previewSize');
+                        d.find('.cropW').val(previewSize.width);
+                        d.find('.cropH').val(previewSize.height);
+
+                        changeImgName(d);
 
 
                     }

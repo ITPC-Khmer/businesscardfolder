@@ -14,6 +14,23 @@ function getArrLanguage()
 
 }
 
+function getStatusOption($select)
+{
+    $op = '';
+    foreach (\app\Helpers\GH::status() as $k=>$v)
+    {
+        $selected = $select == $k?'  selected="selected" ':'';
+        $op .= '<option '.$selected.' value="'.$k.'">'.$v.'</option>';
+    }
+    return $op;
+}
+
+function getStatusTitle($status)
+{
+    return $status>0?\app\Helpers\GH::status()[$status]:'';
+}
+
+
 function getMemberID()
 {
     return \app\Helpers\GH::getMemberID();

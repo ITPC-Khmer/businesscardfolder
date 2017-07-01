@@ -758,23 +758,14 @@
 
 <script type="text/javascript">
 
-    function changeImgName(d) {
-
-        var i = getUniqId();
-        d.find('.imgW').prop('name','image['+i+'][imgW]');
-        d.find('.imgH').prop('name','image['+i+'][imgH]');
-
-        d.find('.imgY1').prop('name','image['+i+'][imgY1]');
-        d.find('.imgX1').prop('name','image['+i+'][imgX1]');
-
-        d.find('.cropW').prop('name','image['+i+'][cropW]');
-        d.find('.cropH').prop('name','image['+i+'][cropH]');
-
-        d.find('.file-use').prop('name','r_image['+i+']');
-
-    }
-
     $(function () {
+
+        $('body').delegate('.image-data2-remove','click',function (e) {
+            e.preventDefault();
+            var img = $(this).data('img');
+            $('.image-data2-remove-hidden').append('<input type="hidden" name="image_data2_remove[]" value="'+img+'" />');
+            $(this).parent().parent().remove();
+        });
 
         $('body').delegate('.delete-upload-img','click',function () {
             $(this).parent().parent().remove();

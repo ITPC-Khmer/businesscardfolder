@@ -3,6 +3,8 @@ namespace app\Helpers;
 
 use App\Language;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class GH extends Model
 {
@@ -99,13 +101,19 @@ class GH extends Model
     }
 
     public static function status(){
-        return [0=> 'Disable',1=> 'Enabled'];
+        return [1=> 'Active',0=> 'Inactive'];
     }
 
     static function translate($txt)
     {
         return Language::Translate($txt);
         //return $txt;
+    }
+
+
+    static function deleteFileUpload($img_full_path)
+    {
+        if(File::exists($img_full_path)) File::delete($img_full_path);
     }
 
 }

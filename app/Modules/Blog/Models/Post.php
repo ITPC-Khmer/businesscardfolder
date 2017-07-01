@@ -2,13 +2,18 @@
 
 namespace App\Modules\Blog\Models;
 
+use app\Helpers\GH;
+use App\Traits\ActivityLogger;
 use function getUserLevel;
 use Illuminate\Database\Eloquent\Model;
+use Intervention\Image\Facades\Image;
 use function json_encode;
 use const null;
 
 class Post extends Model
 {
+    use ActivityLogger;
+
     protected $table = 'posts';
 
     protected $appends = ['category_name'];
@@ -56,9 +61,9 @@ class Post extends Model
         return json_decode($image);
     }
 
-    public function getStatusAttribute($att)
+    public function getStatusAttribute($status)
     {
-        return $att>0?'Active':'Inactive';
+        return getStatusTitle($status);
     }
 
 
@@ -88,34 +93,51 @@ class Post extends Model
             }else{
                 $m = new Post();
             }
+            $image = [];
 
-
-            $image = $request->image;
-
-            if($request->hasFile('r_image')) {
-                $files = $request->file('r_image');
-                foreach ($files as $k=>$file)
-                {
-                    $extension = $file->getClientOriginalExtension();
-                    $filename = rand(11111, 99999) . '_' . time() .rand(1000, 5000). '.' . $extension;
-                    $file->move(public_path('upload/post'), $filename);
-                    $image[$k]['image'] = $filename;
-                }
+            if($request->image_data2 != null && $id > 0)
+            {
+                $image = $request->image_data2;
             }
+            //if($request->hasFile('image_data')) {
+                $images = $request->image_data;
+                if(count($images)>0) {
+
+                    foreach ($images as $img) {
+                        if($img != '') {
+                            $filename = rand(11111, 99999) . '_' . time() . '_' . rand(1000, 5000) . '.png';
+                            Image::make(file_get_contents($img))->save("upload/post/$filename");
+                            $image[] = $filename;
+                        }
+                    }
+
+                    if(count($image)>0) {
+                        $m->image = $image;
+                    }
+                }
+            //}
 
             $m->category_id = $request->category_id;
             $m->title = $request->title;
             $m->description = $request->description;
-            $m->image = $image;
+
             $m->content = $request->content;
             $m->option = $request->option;
             $m->meta_title = $request->meta_title;
             $m->meta_description = $request->meta_description;
-            $m->status = $request->status;
+            $m->status = $request->status ==null?1:$request->status;
             $m->user_id = $request->user_id;
 
             if($m->save())
             {
+                if($id>0 && $request->image_data2_remove != null)
+                {
+                    foreach ($request->image_data2_remove as $im)
+                    {
+                        GH::deleteFileUpload("upload/post/$im");
+                    }
+                }
+
                 return $m;
             }else{
                 return null;

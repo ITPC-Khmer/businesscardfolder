@@ -1,11 +1,23 @@
 <?php
 $arr_field = [
-    'title' => ['txt' => _t('title'),'search'=>1],
-    'description' => ['txt' => _t('description'),'search'=>1],
-    'category_name' => ['txt' => _t('category'),'search'=>0],
-    'image' => ['txt' => _t('image'),'search'=>0],
-    'status' => ['txt' => _t('status'),'search'=>1]
+    'title' => _t('title'),
+    'description' => _t('description'),
+    'category_name' => _t('category'),
+    'image' => _t('image'),
+    'status' => _t('status'),
 ];
+
+
+/*`role_id` int(11) DEFAULT '0',
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `username` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `confirmed` tinyint(1) NOT NULL DEFAULT '0',
+  `confirmation_code` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `photo` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` int(11) DEFAULT '1',*/
 ?>
 
 
@@ -28,19 +40,10 @@ $arr_field = [
                 <div class="bootstrap-table">
                     <div class="fixed-table-toolbar">
                         <div class="pull-right search">
-                            <input class="form-control" type="text" name="s" placeholder="Search">
+                            <input class="form-control" type="text" placeholder="Search">
                         </div>
                         <div class="columns columns-right btn-group pull-right">
-                            <select class="search-select" name="st">
-
-                                <option value="0">All</option>
-                            @foreach($arr_field as $k=>$v)
-                                @if($v['search'] == 1)
-                                    <option value="{{ $k }}">{{ $v['txt'] }}</option>
-                                @endif
-                            @endforeach
-                            </select>
-
+                            {{ Form::select('s',['0'=>'All']+$arr_field,null,['class'=>'search-select']) }}
                             <div class="keep-open btn-group" title="Columns">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                         aria-expanded="false"><i class="glyphicon glyphicon-th icon-th"></i> <span
@@ -49,9 +52,9 @@ $arr_field = [
                                     @foreach($arr_field as $k=>$v)
                                         <li>
                                             <label class="mt-checkbox mt-checkbox-outline">
-                                                <input type="checkbox" data-field="{{ $k }}" data-value="{{ $v['txt'] }}" class="checkbox-field"
+                                                <input type="checkbox" data-field="{{ $k }}" data-value="{{ $v }}" class="checkbox-field"
                                                        value="{{ $k }}" checked="checked">
-                                                {{ $v['txt'] }} <span></span>
+                                                {{ $v }} <span></span>
                                             </label>
                                         </li>
                                     @endforeach
